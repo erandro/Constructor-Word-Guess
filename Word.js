@@ -1,8 +1,7 @@
 var letter = require(`./Letter.js`);
 
-var allLettersOfTheWord = [];
-
 function addsTheLettersToTheWord(theWord, theLetters) {
+    var allLettersOfTheWord = [];
     characterOfWord = theWord.split("");
     characterOfWord.forEach(element => {
         var aCharacter = new letter.Letter(element);

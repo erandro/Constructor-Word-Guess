@@ -1,14 +1,16 @@
 var inquirer = require("inquirer");
 var word = require("./Word.js");
 
-var posible_words = ["one", "five", "seven", "twenty two", "eighty four"];
 var used_words = [];
+var used_letters = [];
+var guesses_left = 9;
 var userLetter = undefined;
 var chosenWord = undefined;
 var currentWord = undefined;
 runGame();
 
 function pickRandomWord() {
+    var posible_words = ["the bridge on the river kwai", "a fistful of dollars", "spartacus", "fantasia", "the birds", "mary poppins", "strangers on a train", "the gold rush", "it's a wonderful life", "the good the bad and the ugly", "gone with the wind", "touch of evil", "frankenstein", "dr. strangelove or how i learned to stop worrying and love the bomb", "vertigo", "lawrence of arabia", "twelve angry men", "seven samurai", "the philadelphia story", "the bride of frankenstein", "king kong", "north by northwest", "a hard day's night", "psycho", "casablanca", "singin' in the rain", "it happened one night", "modern times", "all about eve", "citizen kane", "the wizard of oz"];
     chosenWord = posible_words[Math.floor(Math.random() * posible_words.length)];
     if (posible_words.length === used_words.length) {
         console.log("I'm out of words - Thanks for playing");
@@ -23,13 +25,12 @@ function runGame() {
     pickRandomWord();
     currentWord = new word.Word(chosenWord);
     word.addsTheLettersToTheWord(chosenWord, currentWord);
-    addsSpaceToTheWord();
-    gmaeLoop();
+    addsSpaceAndApostropheToTheWord();
+    gameLoop();
 };
-function gmaeLoop() {
+function gameLoop() {
     showUserTheWord(currentWord)
     takeUserLetter();
-    //gmaeLoop();
 };
 function takeUserLetter() {
     inquirer.prompt([
@@ -50,6 +51,7 @@ function takeUserLetter() {
         }]).then(function (userInput) {
             userLetter = userInput.letter.toLowerCase();
             checkGuess(currentWord, userLetter);
+            checkGuessMessege(currentWord, userLetter);
             checkIfAllLettersWereGuessed(currentWord);
         });
 };
@@ -66,8 +68,25 @@ function checkGuess(word, letter) {
         element.checkLetter(letter);
     });
 };
-function addsSpaceToTheWord() {
+function checkGuessMessege(word, letter) {
+    if (used_letters.indexOf(letter) === -1) {
+        used_letters.push(letter);
+        if (word.word.split("").indexOf(letter) === -1) {
+            guesses_left--;
+            if (guesses_left !== 0) {
+                console.log("Nop");
+                console.log("You have " + guesses_left + " more guesses\n");
+            };
+        } else {
+            console.log("Yasss!\n");
+        };
+    } else {
+        console.log("This letter was already used you dambass\n");
+    };
+}
+function addsSpaceAndApostropheToTheWord() {
     checkGuess(currentWord, " ");
+    checkGuess(currentWord, "'");
 };
 function checkIfAllLettersWereGuessed(word) {
     var rightLettersInWord = 0;
@@ -78,13 +97,22 @@ function checkIfAllLettersWereGuessed(word) {
     });
     if (rightLettersInWord === word.letters.length) {
         showUserTheWord(currentWord)
-        console.log("boom!");
-        //chosenWord = undefined;
-        //currentWord = undefined;
+        used_letters = [];
+        guesses_left = 9;
+        console.log("You got it dude!\n");
         runGame()
+    } else if (guesses_left === 0) {
+        used_letters = [];
+        guesses_left = 9;
+        checkIfUserUsedAllGuesses()
+        runGame();
     } else {
-        gmaeLoop();
+        gameLoop();
     };
+};
+function checkIfUserUsedAllGuesses() {
+    console.log("Oh snap... You lost this round");
+    console.log("The word was '" + currentWord.word + "' by the way...\n");
 };
 function catPrintForEndingGame() {
     console.log(`
