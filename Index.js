@@ -1,4 +1,5 @@
 var inquirer = require("inquirer");
+var colors = require('colors');
 var word = require("./Word.js");
 
 var used_words = [];
@@ -13,7 +14,7 @@ function pickRandomWord() {
     var posible_words = ["the bridge on the river kwai", "a fistful of dollars", "spartacus", "fantasia", "the birds", "mary poppins", "strangers on a train", "the gold rush", "it's a wonderful life", "the good the bad and the ugly", "gone with the wind", "touch of evil", "frankenstein", "dr. strangelove or how i learned to stop worrying and love the bomb", "vertigo", "lawrence of arabia", "twelve angry men", "seven samurai", "the philadelphia story", "the bride of frankenstein", "king kong", "north by northwest", "a hard day's night", "psycho", "casablanca", "singin' in the rain", "it happened one night", "modern times", "all about eve", "citizen kane", "the wizard of oz"];
     chosenWord = posible_words[Math.floor(Math.random() * posible_words.length)];
     if (posible_words.length === used_words.length) {
-        console.log("I'm out of words - Thanks for playing");
+        console.log("I'm out of words - Thanks for playing".rainbow);
         catPrintForEndingGame();
     } else if (used_words.indexOf(chosenWord) === -1) {
         used_words.push(chosenWord);
@@ -74,14 +75,14 @@ function checkGuessMessege(word, letter) {
         if (word.word.split("").indexOf(letter) === -1) {
             guesses_left--;
             if (guesses_left !== 0) {
-                console.log("Nop");
-                console.log("You have " + guesses_left + " more guesses\n");
+                console.log("Nop".red);
+                console.log("You have ".red + guesses_left + " more guesses\n");
             };
         } else {
-            console.log("Yasss!\n");
+            console.log("Yasss!\n".green);
         };
     } else {
-        console.log("This letter was already used you dambass\n");
+        console.log("This letter was already used you dumbass\n".yellow);
     };
 }
 function addsSpaceAndApostropheToTheWord() {
