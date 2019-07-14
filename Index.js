@@ -1,3 +1,4 @@
+debugger;
 var inquirer = require("inquirer");
 var colors = require('colors');
 var word = require("./Word.js");
@@ -8,7 +9,7 @@ var guesses_left = 9;
 var userLetter = undefined;
 var chosenWord = undefined;
 var currentWord = undefined;
-runGame();
+
 
 function pickRandomWord() {
     var posible_words = ["the bridge on the river kwai", "a fistful of dollars", "spartacus", "fantasia", "the birds", "mary poppins", "strangers on a train", "the gold rush", "it's a wonderful life", "the good the bad and the ugly", "gone with the wind", "touch of evil", "frankenstein", "dr. strangelove or how i learned to stop worrying and love the bomb", "vertigo", "lawrence of arabia", "twelve angry men", "seven samurai", "the philadelphia story", "the bride of frankenstein", "king kong", "north by northwest", "a hard day's night", "psycho", "casablanca", "singin' in the rain", "it happened one night", "modern times", "all about eve", "citizen kane", "the wizard of oz"];
@@ -22,6 +23,7 @@ function pickRandomWord() {
         pickRandomWord();
     };
 }
+
 function runGame() {
     pickRandomWord();
     currentWord = new word.Word(chosenWord);
@@ -29,10 +31,12 @@ function runGame() {
     addsSpaceAndApostropheToTheWord();
     gameLoop();
 };
+
 function gameLoop() {
     showUserTheWord(currentWord)
     takeUserLetter();
 };
+
 function takeUserLetter() {
     inquirer.prompt([
         {
@@ -40,14 +44,10 @@ function takeUserLetter() {
             name: "letter",
             message: "Guess a letter!",
             validate: function (input) {
-                var done = this.async();
-                setTimeout(function () {
-                    if (input.length !== 1) {
-                        done('You need to provide a letter');
-                        return;
-                    }
-                    done(null, true);
-                }, 100);
+                if (input.length === 1 && isNaN(input)) {
+                    return true;
+                }
+                return false;
             }
         }]).then(function (userInput) {
             userLetter = userInput.letter.toLowerCase();
@@ -56,6 +56,7 @@ function takeUserLetter() {
             checkIfAllLettersWereGuessed(currentWord);
         });
 };
+
 function showUserTheWord(word) {
     var showWordLetters = [];
     word.letters.forEach(element => {
@@ -64,11 +65,13 @@ function showUserTheWord(word) {
     var showWord = showWordLetters.join(" ");
     console.log(showWord);
 };
+
 function checkGuess(word, letter) {
     word.letters.forEach(element => {
         element.checkLetter(letter);
     });
 };
+
 function checkGuessMessege(word, letter) {
     if (used_letters.indexOf(letter) === -1) {
         used_letters.push(letter);
@@ -85,10 +88,12 @@ function checkGuessMessege(word, letter) {
         console.log("This letter was already used you dumbass\n".yellow);
     };
 }
+
 function addsSpaceAndApostropheToTheWord() {
     checkGuess(currentWord, " ");
     checkGuess(currentWord, "'");
 };
+
 function checkIfAllLettersWereGuessed(word) {
     var rightLettersInWord = 0;
     word.letters.forEach(element => {
@@ -111,10 +116,12 @@ function checkIfAllLettersWereGuessed(word) {
         gameLoop();
     };
 };
+
 function checkIfUserUsedAllGuesses() {
     console.log("Oh snap... You lost this round");
     console.log("The word was '" + currentWord.word + "' by the way...\n");
 };
+
 function catPrintForEndingGame() {
     console.log(`
 ☆    ☆  ☆
@@ -126,3 +133,5 @@ function catPrintForEndingGame() {
    ☆ ╰┳┳━━┳┳╯   ☆
    `);
 };
+
+runGame();
